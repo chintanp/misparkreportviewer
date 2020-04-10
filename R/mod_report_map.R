@@ -17,7 +17,7 @@ mod_report_map_ui <- function(id){
 #' report_map Server Function
 #'
 #' @noRd 
-mod_report_map_server <- function(input, output, session){
+mod_report_map_server <- function(input, output, session, globals){
   ns <- session$ns
  
 }

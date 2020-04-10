@@ -24,6 +24,7 @@ usethis::use_package( "dplyr" )
 usethis::use_package( "shinyWidgets" )
 usethis::use_package( "shinyjs" )
 usethis::use_package( "pool" )
+usethis::use_package( "RPostgres" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
@@ -60,8 +61,8 @@ devtools::build_vignettes()
 ## Code coverage ----
 ## (You'll need GitHub there)
 usethis::use_github()
-usethis::use_travis()
-usethis::use_appveyor()
+usethis::use_travis(ext = "com")
+# usethis::use_appveyor()
 
 # You're now set! ----
 # go to dev/03_deploy.R

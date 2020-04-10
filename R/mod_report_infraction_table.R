@@ -17,7 +17,7 @@ mod_report_infraction_table_ui <- function(id){
 #' report_infraction_table Server Function
 #'
 #' @noRd 
-mod_report_infraction_table_server <- function(input, output, session){
+mod_report_infraction_table_server <- function(input, output, session, globals){
   ns <- session$ns
  
 }

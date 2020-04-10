@@ -17,7 +17,7 @@ mod_report_image_ui <- function(id){
 #' report_image Server Function
 #'
 #' @noRd 
-mod_report_image_server <- function(input, output, session){
+mod_report_image_server <- function(input, output, session, globals){
   ns <- session$ns
  
 }
