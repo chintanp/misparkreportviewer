@@ -25,3 +25,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/chintanp/misparkreportviewer
+BugReports: https://github.com/chintanp/misparkreportviewer/issues
