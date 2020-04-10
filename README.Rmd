@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 # misparkreportviewer
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/chintanp/misparkreportviewer.svg?branch=master)](https://travis-ci.org/chintanp/misparkreportviewer)
+[![Travis build status](https://travis-ci.com/chintanp/misparkreportviewer.svg?branch=master)](https://travis-ci.com/chintanp/misparkreportviewer)
 <!-- badges: end -->
 
 The goal of misparkreportviewer is to ...
