@@ -7,10 +7,16 @@
 app_ui <- function(request) {
   
   home_tab <- bs4Dash::bs4TabItem(tabName = "home_tab",
-                                  mod_reports_table_module_ui("reports_table_module_ui_1"),
-                                  mod_report_map_ui("report_map_ui_1"),
-                                  mod_report_image_ui("report_image_ui_1"),
-                                  mod_report_infraction_table_ui("report_infraction_table_ui_1"))
+                                  fluidRow(
+                                    column(3, mod_reports_table_module_ui("reports_table_module_ui_1")
+                                           ),
+                                    column(9, mod_report_map_ui("report_map_ui_1")
+                                           )
+                                  ),
+                                  fluidRow(
+                                    column(6, mod_report_infraction_table_ui("report_infraction_table_ui_1"))
+                                    )
+                                  )
   
   tagList(
     # Leave this function for adding external resources

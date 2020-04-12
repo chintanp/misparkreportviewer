@@ -16,10 +16,10 @@ knitr::opts_chunk$set(
 # misparkreportviewer
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/chintanp/misparkreportviewer.svg?branch=master)](https://travis-ci.com/chintanp/misparkreportviewer)
+[![Build Status](https://travis-ci.com/chintanp/misparkreportviewer.svg?token=LPthxb7HiH7w9S16jHeG&branch=master)](https://travis-ci.com/chintanp/misparkreportviewer)
 <!-- badges: end -->
 
-The goal of misparkreportviewer is to ...
+The goal of misparkreportviewer is to show the submitted misparking reports. 
 
 ## Installation
 
@@ -37,19 +37,3 @@ This is a basic example which shows you how to solve a common problem:
 library(misparkreportviewer)
 ## basic example code
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!

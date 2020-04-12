@@ -8,6 +8,7 @@
 run_app <- function(
   ...
 ) {
+  options(mapbox.accessToken = Sys.getenv("MAPBOX_ACCESS_TOKEN"))
   with_golem_options(
     app = shinyApp(
       ui = app_ui, 
