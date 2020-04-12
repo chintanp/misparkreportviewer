@@ -17,7 +17,6 @@
 ## Add one line by package you want to add as dependency
 usethis::use_package( "thinkr" )
 usethis::use_package( "bs4Dash" )
-usethis::use_package( "odbc" )
 usethis::use_package( "DBI" )
 usethis::use_package( "dbplyr" )
 usethis::use_package( "dplyr" )
@@ -29,6 +28,7 @@ usethis::use_package( "DT" )
 usethis::use_package( "leaflet" )
 usethis::use_package( "leaflet.mapboxgl" )
 usethis::use_package( "leaflet.extras" )
+usethis::use_package( "magrittr" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

@@ -2,7 +2,7 @@ Package: misparkreportviewer
 Title: misparkreportviewer
 Version: 0.0.0.9000
 Authors@R: person('Chintan', 'Pathak', email = 'cp84@uw.edu', role = c('cre', 'aut'))
-Description: Package containing the app for displaying the misparked app reports
+Description: Package containing the app for displaying the misparked app reports.
 License: MIT + file LICENSE
 Imports: 
     config,
@@ -10,7 +10,6 @@ Imports:
     shiny,
     htmltools,
     bs4Dash,
-    odbc,
     DBI,
     dbplyr,
     dplyr,
@@ -21,7 +20,9 @@ Imports:
     DT,
     leaflet,
     leaflet.mapboxgl,
-    leaflet.extras
+    leaflet.extras,
+    pkgload,
+    magrittr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
