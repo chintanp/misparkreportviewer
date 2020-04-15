@@ -29,6 +29,7 @@ usethis::use_package( "leaflet" )
 usethis::use_package( "leaflet.mapboxgl" )
 usethis::use_package( "leaflet.extras" )
 usethis::use_package( "magrittr" )
+usethis::use_package( "shinycssloaders" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

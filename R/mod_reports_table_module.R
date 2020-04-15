@@ -59,10 +59,13 @@ mod_reports_table_module_server <-
     })
     
     # return the selected row, so other modules can use it to update relevant views
-    return(reactive({
+    return(list(reactive({
       id <- input$reports_table_rows_selected
       globals$stash$reports[id,]
-    }))
+    }), reactive({
+      ids <- input$reports_table_rows_all
+      globals$stash$reports[ids,]
+    })))
     
   }
 

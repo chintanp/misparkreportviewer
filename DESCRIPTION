@@ -22,8 +22,9 @@ Imports:
     leaflet.mapboxgl,
     leaflet.extras,
     pkgload,
-    magrittr
-Remotes:  
+    magrittr,
+    shinycssloaders
+Remotes: 
     rstudio/leaflet.mapboxgl
 Encoding: UTF-8
 LazyData: true

@@ -19,7 +19,11 @@ mod_report_map_ui <- function(id) {
       width = NULL,
       solidHeader = TRUE,
       maximizable = TRUE,
-      leaflet::leafletOutput(outputId = ns("map_reports"))
+      shinycssloaders::withSpinner(
+      leaflet::leafletOutput(outputId = ns("map_reports"), height = 700, width = "100%"),
+      type = 8,
+      color = "#0dc5c1"
+      )
     )
   )
 }
@@ -47,25 +51,47 @@ mod_report_map_server <-
     
     tile_layers <- c("light", "streets", "satellite-streets")
     
-    output$map_reports <- leaflet::renderLeaflet({
-      leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
-        leaflet.mapboxgl::addMapboxGL(style = "mapbox://styles/mapbox/satellite-streets-v11", group = tile_layers[3]) %>%
-        # addPolylines(data = wa_roads, opacity = 1, weight = 2) %>%
-        leaflet.extras::addResetMapButton() %>%
-        leaflet.extras::addSearchOSM() %>%
-        leaflet.extras::addHeatmap(
-          lng = globals$stash$reports$longitude,
-          lat = globals$stash$reports$latitude,
-          blur = 20,
-          max = 0.05,
-          radius = 15
-        )
+    # browser()
+    
+    observeEvent(reports_output[[2]](), {
+      # browser()
+      
+      output$map_reports <- leaflet::renderLeaflet({
+        leaflet::leaflet() %>%
+          leaflet::fitBounds(-171.791110603, 18.91619,-66.96466, 71.3577635769) %>%
+          leaflet.mapboxgl::addMapboxGL(style = "mapbox://styles/mapbox/satellite-streets-v11",
+                                        group = tile_layers[3],
+                                        setView = FALSE) %>%
+          # addPolylines(data = wa_roads, opacity = 1, weight = 2) %>%
+          leaflet.extras::addResetMapButton() %>%
+          # leaflet.extras::addSearchOSM() %>%
+          leaflet.extras::addHeatmap(
+            lng = reports_output[[2]]()$longitude,
+            lat = reports_output[[2]]()$latitude,
+            blur = 20,
+            max = 0.05,
+            radius = 15, 
+            group = 'Heatmap'
+          ) %>%
+          leaflet::addCircleMarkers(lng = reports_output[[2]]()$longitude,
+                                    lat = reports_output[[2]]()$latitude, 
+                                    group = 'Points',
+                                    options = leaflet::pathOptions(
+                                      minZoom = 15
+                                    )
+                                    
+          ) %>%
+          leaflet::addLayersControl(
+            overlayGroups = c("Heatmap", "Points"),
+            options = leaflet::layersControlOptions(collapsed = FALSE)
+          )
+      })
     })
     
-    observeEvent(reports_output(), {
-      print(reports_output()$mispark_id)
+    observeEvent(reports_output[[1]](), {
+      print(reports_output[[1]]()$mispark_id)
       # if a row is selected - add a UI element to show the image of the selected row
-      id <- reports_output()$mispark_id
+      id <- reports_output[[1]]()$mispark_id
       if (length(id) != 0) {
         imageData <- DBI::dbGetQuery(
           db_conn(),
@@ -86,8 +112,8 @@ mod_report_map_server <-
         clearMapOverlay(mapID = "map_reports")
         leaflet::leafletProxy(mapId = "map_reports") %>%
           leaflet::addPopups(
-            lng = reports_output()$longitude,
-            lat = reports_output()$latitude,
+            lng = reports_output[[1]]()$longitude,
+            lat = reports_output[[1]]()$latitude,
             content,
             group = "infractionImage"
           )

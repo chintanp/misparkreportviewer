@@ -28,11 +28,11 @@ mod_report_infraction_table_server <-
     })
     
     
-    observeEvent(reports_output(),
+    observeEvent(reports_output[[1]](),
                  {
-                   print(reports_output()$mispark_id)
+                   print(reports_output[[1]]()$mispark_id)
                    # if a row is selected - add a UI element to show the image of the selected row
-                   id <- reports_output()$mispark_id
+                   id <- reports_output[[1]]()$mispark_id
                    if (length(id) != 0) {
                      infractionsData <- DBI::dbGetQuery(
                        db_conn(),
