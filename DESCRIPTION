@@ -23,7 +23,12 @@ Imports:
     leaflet.extras,
     pkgload,
     magrittr,
-    shinycssloaders
+    shinycssloaders,
+    sf,
+    leafpm,
+    mapview,
+    mapedit,
+    plotly
 Remotes: 
     rstudio/leaflet.mapboxgl
 Encoding: UTF-8

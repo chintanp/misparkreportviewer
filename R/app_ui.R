@@ -1,29 +1,34 @@
 #' The application User-Interface
-#' 
-#' @param request Internal parameter for `{shiny}`. 
+#'
+#' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
-  
   home_tab <- bs4Dash::bs4TabItem(tabName = "home_tab",
                                   fluidRow(
-                                    column(3, mod_reports_table_module_ui("reports_table_module_ui_1")
-                                           ),
-                                    column(9, mod_report_map_ui("report_map_ui_1")
-                                           )
+                                    column(
+                                      3,
+                                      mod_reports_table_module_ui("reports_table_module_ui_1")
+                                    ),
+                                    column(9, mod_report_map_ui("report_map_ui_1"))
                                   ),
+                                  fluidRow(column(12, mod_infractions_bar_ui("infractions_bar_ui_1"))),
+                                  
                                   fluidRow(
+                                    column(
+                                      6,
+                                      mod_reports_bar_ui("reports_bar_ui_1")
+                                    ),
                                     column(6, mod_report_infraction_table_ui("report_infraction_table_ui_1"))
-                                    )
-                                  )
+                                  ))
+  
   
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here
     bs4Dash::bs4DashPage(
-      
       enable_preloader = FALSE,
       navbar = bs4Dash::bs4DashNavbar(
         skin = "light",
@@ -60,38 +65,26 @@ app_ui <- function(request) {
         right_text = "2020"
       ),
       title = "test",
-      body = bs4Dash::bs4DashBody(
-        shinyjs::useShinyjs(),
-        bs4Dash::bs4TabItems(
-          home_tab
-        )
-      )
+      body = bs4Dash::bs4DashBody(shinyjs::useShinyjs(),
+                                  bs4Dash::bs4TabItems(home_tab))
     )
   )
 }
 
 #' Add external Resources to the Application
-#' 
-#' This function is internally used to add external 
-#' resources inside the Shiny application. 
-#' 
+#'
+#' This function is internally used to add external
+#' resources inside the Shiny application.
+#'
 #' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
-golem_add_external_resources <- function(){
+golem_add_external_resources <- function() {
+  add_resource_path('www', app_sys('app/www'))
   
-  add_resource_path(
-    'www', app_sys('app/www')
-  )
- 
-  tags$head(
-    favicon(),
-    bundle_resources(
-      path = app_sys('app/www'),
-      app_title = 'misparkreportviewer'
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert() 
-  )
+  tags$head(favicon(),
+            bundle_resources(path = app_sys('app/www'),
+                             app_title = 'misparkreportviewer'))
+            # Add here other external resources
+            # for example, you can add shinyalert::useShinyalert() )
 }
-

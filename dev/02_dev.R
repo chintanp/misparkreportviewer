@@ -30,6 +30,12 @@ usethis::use_package( "leaflet.mapboxgl" )
 usethis::use_package( "leaflet.extras" )
 usethis::use_package( "magrittr" )
 usethis::use_package( "shinycssloaders" )
+usethis::use_package( "sf" )
+usethis::use_package( "leafpm" )
+usethis::use_package( "mapview" )
+usethis::use_package( "mapedit" )
+usethis::use_package( "lwgeom" )
+usethis::use_package( "plotly" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
@@ -37,7 +43,8 @@ golem::add_module( name = "reports_table_module" ) # Name of the module
 golem::add_module( name = "report_infraction_table" ) # Name of the module
 golem::add_module( name = "report_image" ) # Name of the module
 golem::add_module( name = "report_map" ) # Name of the module
-
+golem::add_module( name = "reports_bar" )
+golem::add_module( name = "infractions_bar" )
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
 golem::add_fct( "helpers" ) 
