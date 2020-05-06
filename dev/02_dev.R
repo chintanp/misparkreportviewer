@@ -36,6 +36,9 @@ usethis::use_package( "mapview" )
 usethis::use_package( "mapedit" )
 usethis::use_package( "lwgeom" )
 usethis::use_package( "plotly" )
+usethis::use_package( "crosstalk" )
+usethis::use_package( "viridis" )
+usethis::use_package( "leafem" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

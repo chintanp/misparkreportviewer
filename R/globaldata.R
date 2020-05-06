@@ -42,7 +42,9 @@ GlobalModule <- function(input, output, session) {
          "
   )
   
-  stash$reports <- reports
+  stash$reports <- crosstalk::SharedData$new(reports)
+  
+  stash$sf_reports <- sf::st_as_sf(reports, coords = c("longitude", "latitude"), crs = 4326)
   
   return (list(stash = stash))
 }

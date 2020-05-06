@@ -56,15 +56,15 @@ mod_reports_table_module_server <-
         class = 'nowrap display',
         extensions = c('Buttons')
       )
-    })
+    }, server=FALSE)
     
     # return the selected row, so other modules can use it to update relevant views
     return(list(reactive({
       id <- input$reports_table_rows_selected
-      globals$stash$reports[id,]
+      globals$stash$reports$origData()[id,]
     }), reactive({
       ids <- input$reports_table_rows_all
-      globals$stash$reports[ids,]
+      globals$stash$reports$origData()[ids,]
     })))
     
   }
