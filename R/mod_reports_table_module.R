@@ -31,7 +31,11 @@ mod_reports_table_module_server <-
   function(input, output, session, globals) {
     ns <- session$ns
     
+    proxy = DT::dataTableProxy('reports_table')
+    
     output$reports_table = DT::renderDT({
+      print("OG DF")
+      print(str(globals$stash$reports))
       DT::datatable(
         globals$stash$reports,
         selection = "single",
@@ -56,16 +60,41 @@ mod_reports_table_module_server <-
         class = 'nowrap display',
         extensions = c('Buttons')
       )
-    }, server=FALSE)
+    }, server=TRUE)
     
     # return the selected row, so other modules can use it to update relevant views
     return(list(reactive({
       id <- input$reports_table_rows_selected
-      globals$stash$reports$origData()[id,]
+      globals$stash$reports[id,]
     }), reactive({
-      ids <- input$reports_table_rows_all
-      globals$stash$reports$origData()[ids,]
-    })))
+      # browser()
+      # req(input$reports_table_rows_all)
+      if(!is.null(input$reports_table_rows_all)) {
+        ids <- input$reports_table_rows_all
+        globals$stash$reports[ids,] %>% tidyr::drop_na(mispark_id)
+      } else if (!is.null(globals$stash$reports)) {
+        globals$stash$reports %>% tidyr::drop_na(mispark_id)
+      }
+
+    }), 
+    
+    updateTableData = function(newData) {
+       print("updateData called")
+       print(str(newData))
+       # browser()
+       #format the data returned from mapEdit to something the datatable is used to 
+       drops <- c("X_leaflet_id", "layerId", "edit_id")
+       newData <- newData[, !(names(newData) %in% drops)]
+       newData <- newData %>% dplyr::mutate(longitude = unlist(purrr::map(newData$geometry, 1)),
+                                            latitude = unlist(purrr::map(newData$geometry, 2)))
+       newData <- newData %>% sf::st_drop_geometry()
+       
+       observe({
+         DT::replaceData(proxy, newData) 
+       })
+       
+       globals$updateReports(newData)    
+    }))
     
   }
 

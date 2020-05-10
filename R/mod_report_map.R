@@ -109,9 +109,10 @@ mod_report_map_server <-
     # browser()
     
     observeEvent(reports_output[[2]](), {
-      # browser()
+      browser()
       # observeEvent(globals$stash$reports, {
       
+      req(reports_output[[2]](), reports_output[[2]]()$latitude, reports_output[[2]]()$longitude)
       clearMapOverlay(mapID = "map_reports-map",
                       removeGroup = "Points")
       clearMapOverlay(mapID = "map_reports-map",
@@ -163,9 +164,10 @@ mod_report_map_server <-
     
     observeEvent(reports_output[[1]](), {
       print(reports_output[[1]]()$mispark_id)
+      clearMapOverlay(mapID = "map_reports-map", removeGroup = "infractionImage")
       # if a row is selected - add a UI element to show the image of the selected row
       id <- reports_output[[1]]()$mispark_id
-      if (length(id) != 0) {
+      if (length(id) > 0 && !is.na(id)) {
         imageData <- DBI::dbGetQuery(
           db_conn(),
           paste0(
@@ -182,7 +184,7 @@ mod_report_map_server <-
             '
           )
         
-        clearMapOverlay(mapID = "map_reports-map", removeGroup = "infractionImage")
+
         leaflet::leafletProxy(mapId = "map_reports-map") %>%
           leaflet::addPopups(
             lng = reports_output[[1]]()$longitude,
@@ -204,6 +206,9 @@ mod_report_map_server <-
       reports_dt_int <- sf::st_intersection(selections()$finished, sf_dt_reports)
       
       str(reports_dt_int)
+      # browser()
+      req(nrow(reports_dt_int) > 0)
+      reports_output$updateTableData(reports_dt_int)
       # browser()
     })
   }

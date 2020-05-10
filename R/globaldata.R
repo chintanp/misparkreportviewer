@@ -13,9 +13,10 @@ GlobalModule <- function(input, output, session) {
   )
   stash$conn <- conn
   
-  reports <- DBI::dbGetQuery(
-    conn,
-    "select
+  get_all_reports <- function() {
+    reports <- DBI::dbGetQuery(
+      conn,
+      "select
              mr.mispark_id,
              mc.company_name,
              mt.micromobility_typename,
@@ -40,11 +41,27 @@ GlobalModule <- function(input, output, session) {
           ON mr.city_id = ci.city_id
          GROUP BY mr.mispark_id, mc.company_name, mt.micromobility_typename, ci.city;
          "
-  )
+    )
+    
+    return (reports)
+  }
+   
+  reports <- get_all_reports()
   
-  stash$reports <- crosstalk::SharedData$new(reports)
+  stash$reports <- reports
   
   stash$sf_reports <- sf::st_as_sf(reports, coords = c("longitude", "latitude"), crs = 4326)
   
-  return (list(stash = stash))
+  return (list(stash = stash, 
+               updateReports = function(reps) {
+                 print("updating reports")
+                 print(str(reps))
+                 stash$reports <- reps
+               }, 
+               resetReports = function() {
+                 print("reseting reports to the full list")
+                 reports <- get_all_reports()
+                 
+                 stash$reports <- reports
+               }))
 }

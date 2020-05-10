@@ -41,7 +41,9 @@ mod_infractions_bar_server <- function(input,
   
   output$infraction_bar <- plotly::renderPlotly({
     # browser()
-    if(length(reports_output[[2]]()$mispark_id) != 0) {
+    #if(length(reports_output[[2]]()$mispark_id) != 0) {
+      req(reports_output[[2]]())
+      req(reports_output[[2]]()$mispark_id)
       # Get the infraction descriptions for the mispark_ids in the table
       infractionData <- DBI::dbGetQuery(
         db_conn(),
@@ -56,6 +58,7 @@ mod_infractions_bar_server <- function(input,
         )
       )
       
+      req(infractionData)
       fig <-
         plotly::plot_ly(
           infractionData,
@@ -67,7 +70,7 @@ mod_infractions_bar_server <- function(input,
                        yaxis = list(title = "Count"))
       
       fig
-    }
+    # }
 
   })
 }

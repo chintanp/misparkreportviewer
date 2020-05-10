@@ -31,7 +31,8 @@ Imports:
     plotly,
     crosstalk,
     viridis,
-    leafem
+    leafem,
+    purrr
 Remotes: 
     rstudio/leaflet.mapboxgl
     rstudio/DT

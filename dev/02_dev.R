@@ -39,6 +39,7 @@ usethis::use_package( "plotly" )
 usethis::use_package( "crosstalk" )
 usethis::use_package( "viridis" )
 usethis::use_package( "leafem" )
+usethis::use_package( "purrr" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

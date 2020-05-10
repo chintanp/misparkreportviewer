@@ -35,16 +35,16 @@ mod_reports_bar_server <- function(input,
   
   output$severity_bar <- plotly::renderPlotly({
     # browser()
+    req(reports_output[[2]]())
     fig <- plotly::plot_ly(reports_output[[2]](), x = ~ as.factor(severity)) %>%
-      plotly::add_histogram()
-    
-    fig <- fig %>% plotly::layout(
-      
+      plotly::add_histogram() %>% 
+      plotly::layout(
+        
         xaxis = list(title = "Severity"),
         yaxis = list(title = "Count")
+        
+      )
 
-    )
-    
     fig
   })
   
