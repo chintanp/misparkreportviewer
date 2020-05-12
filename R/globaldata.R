@@ -13,6 +13,15 @@ GlobalModule <- function(input, output, session) {
   )
   stash$conn <- conn
   
+  ##redis
+  # r <- redux::hiredis()
+  # r$DEL("deletedFeaturesEditId") 
+  # stash$r <- r
+  
+  ## MemoryCache
+  mcache <- shiny::memoryCache()
+  stash$mcache <- mcache
+  
   get_all_reports <- function() {
     reports <- DBI::dbGetQuery(
       conn,

@@ -37,6 +37,8 @@ reports_map <- leaflet::leaflet() %>%
   leaflet.extras::addResetMapButton() %>%
   leafem::addMouseCoordinates()
 
+deletedFeaturesEditId <- NULL
+
 #' @importFrom shiny NS tagList
 mod_report_map_ui <- function(id) {
   ns <- NS(id)
@@ -80,7 +82,7 @@ mod_report_map_server <-
            reports_output) {
     ns <- session$ns
     
-    deletedFeatures <- NULL
+    
     
     db_conn <- reactive({
       globals$stash$conn
@@ -91,6 +93,41 @@ mod_report_map_server <-
       
       leaflet::leafletProxy(mapId = mapID) %>%
         leaflet::clearGroup(group = removeGroup)
+      print("map cleared")
+    }
+    
+    showReportImagePopup <- function(id, lat, lng) {
+      # print(reports_output[[1]]()$mispark_id)
+      clearMapOverlay(mapID = "map_reports-map", removeGroup = "infractionImage")
+      # if a row is selected - add a UI element to show the image of the selected row
+      # id <- reports_output[[1]]()$mispark_id
+      browser()
+      if (length(id) > 0 && !is.na(id)) {
+        imageData <- DBI::dbGetQuery(
+          db_conn(),
+          paste0(
+            "select report_image from misparking_report where mispark_id = ",
+            id
+          )
+        )
+        
+        content  <-
+          paste0(
+            '<img style="border:10px outset silver;" width="150" alt="Photo of Infraction" src="data:image/png;base64, ',
+            imageData$report_image,
+            '"/>
+            '
+          )
+   
+        leaflet::leafletProxy(mapId = "map_reports-map") %>%
+          leaflet::addPopups(
+            lng = lng,
+            lat = lat,
+            content,
+            group = "infractionImage"
+          )
+        
+      }
     }
     
     output$map_reports <- leaflet::renderLeaflet({
@@ -102,13 +139,20 @@ mod_report_map_server <-
       "map_reports",
       editor = "leafpm",
       editorOptions = list(
+        targetGroup = "selectShape",
         toolbarOptions = leafpm::pmToolbarOptions(
           drawMarker = FALSE,
           drawPolyline = FALSE,
-          drawCircle = FALSE
+          drawCircle = FALSE, 
+          editMode = FALSE, 
+          cutPolygon = FALSE
+        ), 
+        editOptions = leafpm::pmEditOptions(
+          draggable = FALSE
         )
       ),
       record = FALSE,
+      targetLayerId = "selectShape",
       reports_map
     )
     
@@ -145,6 +189,7 @@ mod_report_map_server <-
           lng = reports_output[[2]]()$longitude,
           lat = reports_output[[2]]()$latitude,
           group = 'Points',
+          layerId = reports_output[[2]]()$mispark_id,
           options = leaflet::pathOptions(minZoom = 15),
           radius = 5,
           stroke = FALSE,
@@ -175,37 +220,17 @@ mod_report_map_server <-
     })
     
     observeEvent(reports_output[[1]](), {
-      print(reports_output[[1]]()$mispark_id)
-      clearMapOverlay(mapID = "map_reports-map", removeGroup = "infractionImage")
-      # if a row is selected - add a UI element to show the image of the selected row
-      id <- reports_output[[1]]()$mispark_id
-      if (length(id) > 0 && !is.na(id)) {
-        imageData <- DBI::dbGetQuery(
-          db_conn(),
-          paste0(
-            "select report_image from misparking_report where mispark_id = ",
-            id
-          )
-        )
-        
-        content  <-
-          paste0(
-            '<img style="border:10px outset silver;" width="150" alt="Photo of Infraction" src="data:image/png;base64, ',
-            imageData$report_image,
-            '"/>
-            '
-          )
-        
-        
-        leaflet::leafletProxy(mapId = "map_reports-map") %>%
-          leaflet::addPopups(
-            lng = reports_output[[1]]()$longitude,
-            lat = reports_output[[1]]()$latitude,
-            content,
-            group = "infractionImage"
-          )
-        
-      }
+      showReportImagePopup(reports_output[[1]]()$mispark_id, reports_output[[1]]()$latitude, reports_output[[1]]()$longitude)
+    })
+    
+    observeEvent(input[["map_reports-map_marker_click"]], {
+      print("map marker click")
+      click <- input[["map_reports-map_marker_click"]]
+      id <- input[["map_reports-map_marker_click"]]$id
+      lat <- input[["map_reports-map_marker_click"]]$lat
+      lng <- input[["map_reports-map_marker_click"]]$lng
+      print(input[["map_reports-map_marker_click"]]$id)
+      showReportImagePopup(id, lat, lng)
     })
     
     observeEvent(selections()$finished, {
@@ -221,7 +246,7 @@ mod_report_map_server <-
         sf::st_intersection(selections()$finished, sf_dt_reports)
       
       str(reports_dt_int)
-      browser()
+      # browser()
       req(nrow(reports_dt_int) > 0)
       reports_output$updateTableData(reports_dt_int)
       
@@ -244,16 +269,35 @@ mod_report_map_server <-
     
     observe({
       req(selections()$deleted)
+      deletedFeaturesEditId <- globals$stash$mcache$get(paste0("deleted", session$token))
       print("something deleted")
-      browser()
-      if (selections()$deleted$edit_id == lastDeletedFeatureEditID()) {
+      # browser()
+      if(length(selections()$deleted$edit_id) == 1 & is.key_missing(deletedFeaturesEditId)) {
+        
         print("delete called")
+        # clearMapOverlay(mapID = "map_reports-map",
+        #                 removeGroup = "Points")
+        # clearMapOverlay(mapID = "map_reports-map",
+        #                 removeGroup = "Heatmap")
         globals$resetReports()
         reports_output$resetTable()
-        browser()
-        deletedFeatures <- selections()$deleted
-        selections <- NULL
+        # browser()
+        globals$stash$mcache$set(paste0("deleted", session$token), selections()$deleted$edit_id)
+        # deletedFeaturesEditId <- selections()$deleted$edit_id
+        # selections <- NULL
+
+      } else if(length(selections()$deleted$edit_id) > 1 & deletedFeaturesEditId != dplyr::last(selections()$deleted$edit_id)) {
+        print("delete called when length gt 1")
+        # clearMapOverlay(mapID = "map_reports-map",
+        #                 removeGroup = "Points")
+        # clearMapOverlay(mapID = "map_reports-map",
+        #                 removeGroup = "Heatmap")
+        globals$resetReports()
+        reports_output$resetTable()
+        # browser()
+        globals$stash$mcache$set(paste0("deleted", session$token), dplyr::last(selections()$deleted$edit_id))
       }
+
     })
     #
     # observeEvent(input$resetMapBtn, {

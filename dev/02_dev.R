@@ -40,6 +40,7 @@ usethis::use_package( "crosstalk" )
 usethis::use_package( "viridis" )
 usethis::use_package( "leafem" )
 usethis::use_package( "purrr" )
+usethis::use_package( "redux" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
