@@ -14,7 +14,7 @@ colorPal <-
   leaflet::colorNumeric("inferno", domain = c(0, 10), reverse = TRUE)
 
 reports_map <- leaflet::leaflet() %>%
-  leaflet::fitBounds(-171.791110603, 18.91619,-66.96466, 71.3577635769) %>%
+  leaflet::fitBounds(-171.791110603, 18.91619, -66.96466, 71.3577635769) %>%
   leaflet.mapboxgl::addMapboxGL(
     style = "mapbox://styles/mapbox/satellite-streets-v11",
     group = tile_layers[3],
@@ -34,7 +34,7 @@ reports_map <- leaflet::leaflet() %>%
     accessToken = "pk.eyJ1IjoiY2hpbnRhbnAiLCJhIjoiY2ppYXU1anVuMThqazNwcDB2cGtneDdkYyJ9.TL6RTyRRFCbvJWyFa4P0Ow"
   ) %>%
   # addPolylines(data = wa_roads, opacity = 1, weight = 2) %>%
-  leaflet.extras::addResetMapButton() %>% 
+  leaflet.extras::addResetMapButton() %>%
   leafem::addMouseCoordinates()
 
 #' @importFrom shiny NS tagList
@@ -50,6 +50,7 @@ mod_report_map_ui <- function(id) {
       width = NULL,
       solidHeader = TRUE,
       maximizable = TRUE,
+      uiOutput(ns("resetMapBtnUI")),
       shinycssloaders::withSpinner(
         mapedit::editModUI(
           id = ns("map_reports"),
@@ -79,6 +80,8 @@ mod_report_map_server <-
            reports_output) {
     ns <- session$ns
     
+    deletedFeatures <- NULL
+    
     db_conn <- reactive({
       globals$stash$conn
     })
@@ -99,20 +102,29 @@ mod_report_map_server <-
       "map_reports",
       editor = "leafpm",
       editorOptions = list(
-        toolbarOptions = leafpm::pmToolbarOptions(drawMarker = FALSE,
-                                                  drawPolyline = FALSE)
+        toolbarOptions = leafpm::pmToolbarOptions(
+          drawMarker = FALSE,
+          drawPolyline = FALSE,
+          drawCircle = FALSE
+        )
       ),
+      record = FALSE,
       reports_map
     )
     
+    lastDeletedFeatureEditID <- reactive({
+      dplyr::last(selections()$deleted$edit_id)
+    })
     
     # browser()
     
     observeEvent(reports_output[[2]](), {
-      browser()
+      # browser()
       # observeEvent(globals$stash$reports, {
       
-      req(reports_output[[2]](), reports_output[[2]]()$latitude, reports_output[[2]]()$longitude)
+      req(reports_output[[2]](),
+          reports_output[[2]]()$latitude,
+          reports_output[[2]]()$longitude)
       clearMapOverlay(mapID = "map_reports-map",
                       removeGroup = "Points")
       clearMapOverlay(mapID = "map_reports-map",
@@ -159,7 +171,7 @@ mod_report_map_server <-
       #      })
       
       # browser()
-
+      
     })
     
     observeEvent(reports_output[[1]](), {
@@ -184,7 +196,7 @@ mod_report_map_server <-
             '
           )
         
-
+        
         leaflet::leafletProxy(mapId = "map_reports-map") %>%
           leaflet::addPopups(
             lng = reports_output[[1]]()$longitude,
@@ -196,21 +208,59 @@ mod_report_map_server <-
       }
     })
     
-    observe({
-      
-      sf_dt_reports <- sf::st_as_sf(reports_output[[2]](), coords = c("longitude", "latitude"), crs = 4326)
+    observeEvent(selections()$finished, {
+      sf_dt_reports <-
+        sf::st_as_sf(reports_output[[2]](),
+                     coords = c("longitude", "latitude"),
+                     crs = 4326)
       
       str(selections())
       
       req(selections()$finished) # only proceed if not null
-      reports_dt_int <- sf::st_intersection(selections()$finished, sf_dt_reports)
+      reports_dt_int <-
+        sf::st_intersection(selections()$finished, sf_dt_reports)
       
       str(reports_dt_int)
-      # browser()
+      browser()
       req(nrow(reports_dt_int) > 0)
       reports_output$updateTableData(reports_dt_int)
+      
+      # output$resetMapBtnUI <- renderUI({
+      #   print("button should render now")
+      #   tags$div(
+      #     actionButton(
+      #       inputId = ns("resetMapBtn"),
+      #       label = "Reset Map and Table",
+      #       width = "100%"
+      #     ),
+      #     tags$br(),
+      #     tags$br()
+      #   )
+      # })
+      
+      
       # browser()
     })
+    
+    observe({
+      req(selections()$deleted)
+      print("something deleted")
+      browser()
+      if (selections()$deleted$edit_id == lastDeletedFeatureEditID()) {
+        print("delete called")
+        globals$resetReports()
+        reports_output$resetTable()
+        browser()
+        deletedFeatures <- selections()$deleted
+        selections <- NULL
+      }
+    })
+    #
+    # observeEvent(input$resetMapBtn, {
+    #   print("button clicked")
+    #   globals$resetReports()
+    #   reports_output$resetTable()
+    # })
   }
 
 ## To be copied in the UI
