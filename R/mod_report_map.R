@@ -101,7 +101,7 @@ mod_report_map_server <-
       clearMapOverlay(mapID = "map_reports-map", removeGroup = "infractionImage")
       # if a row is selected - add a UI element to show the image of the selected row
       # id <- reports_output[[1]]()$mispark_id
-      browser()
+      # browser()
       if (length(id) > 0 && !is.na(id)) {
         imageData <- DBI::dbGetQuery(
           db_conn(),
@@ -118,14 +118,12 @@ mod_report_map_server <-
             '"/>
             '
           )
-   
+        
         leaflet::leafletProxy(mapId = "map_reports-map") %>%
-          leaflet::addPopups(
-            lng = lng,
-            lat = lat,
-            content,
-            group = "infractionImage"
-          )
+          leaflet::addPopups(lng = lng,
+                             lat = lat,
+                             content,
+                             group = "infractionImage")
         
       }
     }
@@ -134,31 +132,29 @@ mod_report_map_server <-
       reports_map
     })
     
-    selections <- callModule(
+    crud <- callModule(
       mapedit::editMod,
       "map_reports",
-      editor = "leafpm",
+      editor = "leaflet.extras",
       editorOptions = list(
-        targetGroup = "selectShape",
-        toolbarOptions = leafpm::pmToolbarOptions(
-          drawMarker = FALSE,
-          drawPolyline = FALSE,
-          drawCircle = FALSE, 
-          editMode = FALSE, 
-          cutPolygon = FALSE
-        ), 
-        editOptions = leafpm::pmEditOptions(
-          draggable = FALSE
-        )
+        polylineOptions = FALSE,
+        circleOptions = FALSE,
+        markerOptions = FALSE,
+        circleMarkerOptions = FALSE,
+        editOptions = leaflet.extras::editToolbarOptions(edit = FALSE, ),
+        singleFeature = TRUE,
+        clearFeatures = TRUE
+        
       ),
-      record = FALSE,
-      targetLayerId = "selectShape",
       reports_map
     )
     
-    lastDeletedFeatureEditID <- reactive({
-      dplyr::last(selections()$deleted$edit_id)
-    })
+    deleted <- isolate(crud()$deleted)
+    drawn <- isolate(crud()$drawn)
+    
+    # lastDeletedFeatureEditID <- reactive({
+    #   dplyr::last(selections()$deleted$edit_id)
+    # })
     
     # browser()
     
@@ -220,7 +216,11 @@ mod_report_map_server <-
     })
     
     observeEvent(reports_output[[1]](), {
-      showReportImagePopup(reports_output[[1]]()$mispark_id, reports_output[[1]]()$latitude, reports_output[[1]]()$longitude)
+      showReportImagePopup(
+        reports_output[[1]]()$mispark_id,
+        reports_output[[1]]()$latitude,
+        reports_output[[1]]()$longitude
+      )
     })
     
     observeEvent(input[["map_reports-map_marker_click"]], {
@@ -233,17 +233,17 @@ mod_report_map_server <-
       showReportImagePopup(id, lat, lng)
     })
     
-    observeEvent(selections()$finished, {
+    observeEvent(crud()$finished, {
       sf_dt_reports <-
         sf::st_as_sf(reports_output[[2]](),
                      coords = c("longitude", "latitude"),
                      crs = 4326)
       
-      str(selections())
+      str(crud())
       
-      req(selections()$finished) # only proceed if not null
+      req(crud()$finished) # only proceed if not null
       reports_dt_int <-
-        sf::st_intersection(selections()$finished, sf_dt_reports)
+        sf::st_intersection(crud()$finished, sf_dt_reports)
       
       str(reports_dt_int)
       # browser()
@@ -267,44 +267,56 @@ mod_report_map_server <-
       # browser()
     })
     
-    observe({
-      req(selections()$deleted)
-      deletedFeaturesEditId <- globals$stash$mcache$get(paste0("deleted", session$token))
-      print("something deleted")
-      # browser()
-      if(length(selections()$deleted$edit_id) == 1 & is.key_missing(deletedFeaturesEditId)) {
-        
-        print("delete called")
-        # clearMapOverlay(mapID = "map_reports-map",
-        #                 removeGroup = "Points")
-        # clearMapOverlay(mapID = "map_reports-map",
-        #                 removeGroup = "Heatmap")
-        globals$resetReports()
-        reports_output$resetTable()
-        # browser()
-        globals$stash$mcache$set(paste0("deleted", session$token), selections()$deleted$edit_id)
-        # deletedFeaturesEditId <- selections()$deleted$edit_id
-        # selections <- NULL
-
-      } else if(length(selections()$deleted$edit_id) > 1 & deletedFeaturesEditId != dplyr::last(selections()$deleted$edit_id)) {
-        print("delete called when length gt 1")
-        # clearMapOverlay(mapID = "map_reports-map",
-        #                 removeGroup = "Points")
-        # clearMapOverlay(mapID = "map_reports-map",
-        #                 removeGroup = "Heatmap")
-        globals$resetReports()
-        reports_output$resetTable()
-        # browser()
-        globals$stash$mcache$set(paste0("deleted", session$token), dplyr::last(selections()$deleted$edit_id))
-      }
-
-    })
+    # observe({
+    #   req(selections()$deleted)
+    #   deletedLeafletID <-
+    #     globals$stash$mcache$get(paste0("deleted", session$token))
+    #   print("something deleted")
+    #   browser()
+    #   if (length(selections()$deleted$X_leaflet_id) == 1 &
+    #       is.key_missing(deletedLeafletID)) {
+    #     print("delete called")
+    #     # clearMapOverlay(mapID = "map_reports-map",
+    #     #                 removeGroup = "Points")
+    #     # clearMapOverlay(mapID = "map_reports-map",
+    #     #                 removeGroup = "Heatmap")
+    #     globals$resetReports()
+    #     reports_output$resetTable()
+    #     # browser()
+    #     globals$stash$mcache$set(paste0("deleted", session$token),
+    #                              selections()$deleted$X_leaflet_id)
+    #     # deletedFeaturesEditId <- selections()$deleted$edit_id
+    #     # selections <- NULL
     #
-    # observeEvent(input$resetMapBtn, {
-    #   print("button clicked")
-    #   globals$resetReports()
-    #   reports_output$resetTable()
+    #   } else if (length(selections()$deleted$X_leaflet_id) > 1 &
+    #              deletedLeafletID != dplyr::last(selections()$deleted$X_leaflet_id)) {
+    #     print("delete called when length gt 1")
+    #     # clearMapOverlay(mapID = "map_reports-map",
+    #     #                 removeGroup = "Points")
+    #     # clearMapOverlay(mapID = "map_reports-map",
+    #     #                 removeGroup = "Heatmap")
+    #     globals$resetReports()
+    #     reports_output$resetTable()
+    #     # browser()
+    #     globals$stash$mcache$set(paste0("deleted", session$token),
+    #                              dplyr::last(selections()$deleted$edit_id))
+    #   }
+    #
     # })
+    #
+    
+    
+    observeEvent(crud()$deleted, {
+      if (!identical(crud()$deleted, deleted)) {
+        print('deleted')
+        str(crud()$deleted)
+        deleted <<- crud()$deleted
+        globals$resetReports()
+        reports_output$resetTable()
+        
+      }
+    })
+    
   }
 
 ## To be copied in the UI
