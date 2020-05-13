@@ -11,17 +11,7 @@
 mod_infractions_bar_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    bs4Dash::bs4Card(
-      title = "Infraction Type Bar Chart",
-      closable = FALSE,
-      status = "success",
-      collapsible = TRUE,
-      elevation = 4,
-      width = NULL,
-      maximizable = TRUE,
-      solidHeader = TRUE,
       plotly::plotlyOutput(outputId = ns("infraction_bar"))
-    )
   )
 }
 

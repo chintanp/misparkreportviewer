@@ -10,16 +10,7 @@
 mod_reports_bar_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    bs4Dash::bs4Card(
-      title = "Severity Bar Chart",
-      closable = FALSE,
-      status = "success",
-      collapsible = TRUE,
-      elevation = 4,
-      width = NULL,
-      solidHeader = TRUE,
       plotly::plotlyOutput(outputId = ns("severity_bar"))
-    )
   )
 }
 

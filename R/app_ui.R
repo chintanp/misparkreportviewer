@@ -11,17 +11,41 @@ app_ui <- function(request) {
                                       3,
                                       mod_reports_table_module_ui("reports_table_module_ui_1")
                                     ),
-                                    column(9, mod_report_map_ui("report_map_ui_1"))
-                                  ),
-                                  fluidRow(column(12, mod_infractions_bar_ui("infractions_bar_ui_1"))),
-                                  
-                                  fluidRow(
                                     column(
-                                      6,
-                                      mod_reports_bar_ui("reports_bar_ui_1")
-                                    ),
-                                    column(6, mod_report_infraction_table_ui("report_infraction_table_ui_1"))
-                                  ))
+                                      9,
+                                      
+                                      bs4Dash::bs4TabCard(
+                                        title = tags$p(
+                                          "Map and Charts",
+                                          style = " font-size: 20px;
+                                                    font-weight: 600; 
+                                                    margin: 0; "
+                                        ),
+                                        elevation = 4,
+                                        id = "map_charts_tabcard",
+                                        width = 12,
+                                        collapsible = TRUE,
+                                        maximizable = TRUE,
+                                        closable = FALSE,
+                                        type = "tabs",
+                                        status = "purple",
+                                        solidHeader = FALSE,
+                                        bs4Dash::bs4TabPanel(
+                                          tabName = "Map",
+                                          active = TRUE,
+                                          mod_report_map_ui("report_map_ui_1")
+                                        ),
+                                        bs4Dash::bs4TabPanel(tabName = "Infraction Type Bar Chart",
+                                                             mod_infractions_bar_ui("infractions_bar_ui_1")),
+                                        bs4Dash::bs4TabPanel(tabName = "Severity Bar Chart",
+                                                             mod_reports_bar_ui("reports_bar_ui_1"))
+                                      )
+                                    )
+                                  ),
+                                  fluidRow(column(
+                                    6,
+                                    mod_report_infraction_table_ui("report_infraction_table_ui_1")
+                                  )))
   
   
   tagList(
@@ -85,6 +109,6 @@ golem_add_external_resources <- function() {
   tags$head(favicon(),
             bundle_resources(path = app_sys('app/www'),
                              app_title = 'misparkreportviewer'))
-            # Add here other external resources
-            # for example, you can add shinyalert::useShinyalert() )
+  # Add here other external resources
+  # for example, you can add shinyalert::useShinyalert() )
 }

@@ -13,13 +13,13 @@ mod_reports_table_module_ui <- function(id) {
     bs4Dash::bs4Card(
       title = "Misparked Reports",
       closable = FALSE,
-      status = "success",
+      status = "purple",
       collapsible = TRUE,
       elevation = 4,
       width = NULL,
       maximizable = TRUE,
       solidHeader = TRUE,
-      DT::DTOutput(ns("reports_table"))
+      DT::DTOutput(ns("reports_table"), height = 600)
     )
   )
 }
@@ -89,7 +89,7 @@ mod_reports_table_module_server <-
         print(str(newData))
         # browser()
         #format the data returned from mapEdit to something the datatable is used to
-        drops <- c("X_leaflet_id", "layerId", "edit_id")
+        drops <- c("X_leaflet_id", "layerId", "edit_id", "feature_type")
         newData <- newData[, !(names(newData) %in% drops)]
         newData <-
           newData %>% dplyr::mutate(longitude = unlist(purrr::map(newData$geometry, 1)),

@@ -14,7 +14,7 @@ colorPal <-
   leaflet::colorNumeric("inferno", domain = c(0, 10), reverse = TRUE)
 
 reports_map <- leaflet::leaflet() %>%
-  leaflet::fitBounds(-171.791110603, 18.91619, -66.96466, 71.3577635769) %>%
+  leaflet::fitBounds(-171.791110603, 18.91619,-66.96466, 71.3577635769) %>%
   leaflet.mapboxgl::addMapboxGL(
     style = "mapbox://styles/mapbox/satellite-streets-v11",
     group = tile_layers[3],
@@ -42,33 +42,20 @@ deletedFeaturesEditId <- NULL
 #' @importFrom shiny NS tagList
 mod_report_map_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    bs4Dash::bs4Card(
-      title = "Map of Reports",
-      closable = FALSE,
-      status = "success",
-      collapsible = TRUE,
-      elevation = 4,
-      width = NULL,
-      solidHeader = TRUE,
-      maximizable = TRUE,
-      uiOutput(ns("resetMapBtnUI")),
-      shinycssloaders::withSpinner(
-        mapedit::editModUI(
-          id = ns("map_reports"),
-          height = 600,
-          width = "100%"
-        ),
-        # leaflet::leafletOutput(
-        #   outputId = ns("map_reports"),
-        #   height = 700,
-        #   width = "100%"
-        # ),
-        type = 8,
-        color = "#0dc5c1"
-      )
-    )
-  )
+  tagList(shinycssloaders::withSpinner(
+    mapedit::editModUI(
+      id = ns("map_reports"),
+      height = 600,
+      width = "100%"
+    ),
+    # leaflet::leafletOutput(
+    #   outputId = ns("map_reports"),
+    #   height = 700,
+    #   width = "100%"
+    # ),
+    type = 8,
+    color = "#0dc5c1"
+  ))
 }
 
 #' report_map Server Function
@@ -141,7 +128,7 @@ mod_report_map_server <-
         circleOptions = FALSE,
         markerOptions = FALSE,
         circleMarkerOptions = FALSE,
-        editOptions = leaflet.extras::editToolbarOptions(edit = FALSE, ),
+        editOptions = leaflet.extras::editToolbarOptions(edit = FALSE,),
         singleFeature = TRUE,
         clearFeatures = TRUE
         
