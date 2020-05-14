@@ -63,12 +63,12 @@ GlobalModule <- function(input, output, session) {
   
   return (list(stash = stash, 
                updateReports = function(reps) {
-                 print("updating reports")
-                 print(str(reps))
+                 # print("updating reports")
+                 # print(str(reps))
                  stash$reports <- reps
                }, 
                resetReports = function() {
-                 print("reseting reports to the full list")
+                 # print("reseting reports to the full list")
                  reports <- get_all_reports()
                  
                  stash$reports <- reports

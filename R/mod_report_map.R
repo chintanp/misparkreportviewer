@@ -76,11 +76,11 @@ mod_report_map_server <-
     })
     
     clearMapOverlay <- function(mapID, removeGroup) {
-      print("clearing mapOverlay")
+      # print("clearing mapOverlay")
       
       leaflet::leafletProxy(mapId = mapID) %>%
         leaflet::clearGroup(group = removeGroup)
-      print("map cleared")
+      # print("map cleared")
     }
     
     showReportImagePopup <- function(id, lat, lng) {
@@ -211,12 +211,12 @@ mod_report_map_server <-
     })
     
     observeEvent(input[["map_reports-map_marker_click"]], {
-      print("map marker click")
+      # print("map marker click")
       click <- input[["map_reports-map_marker_click"]]
       id <- input[["map_reports-map_marker_click"]]$id
       lat <- input[["map_reports-map_marker_click"]]$lat
       lng <- input[["map_reports-map_marker_click"]]$lng
-      print(input[["map_reports-map_marker_click"]]$id)
+      # print(input[["map_reports-map_marker_click"]]$id)
       showReportImagePopup(id, lat, lng)
     })
     
@@ -226,13 +226,13 @@ mod_report_map_server <-
                      coords = c("longitude", "latitude"),
                      crs = 4326)
       
-      str(crud())
+      # str(crud())
       
       req(crud()$finished) # only proceed if not null
       reports_dt_int <-
         sf::st_intersection(crud()$finished, sf_dt_reports)
       
-      str(reports_dt_int)
+      # str(reports_dt_int)
       # browser()
       req(nrow(reports_dt_int) > 0)
       reports_output$updateTableData(reports_dt_int)
@@ -295,8 +295,8 @@ mod_report_map_server <-
     
     observeEvent(crud()$deleted, {
       if (!identical(crud()$deleted, deleted)) {
-        print('deleted')
-        str(crud()$deleted)
+        # print('deleted')
+        # str(crud()$deleted)
         deleted <<- crud()$deleted
         globals$resetReports()
         reports_output$resetTable()

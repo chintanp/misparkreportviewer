@@ -34,10 +34,10 @@ mod_reports_table_module_server <-
     proxy = DT::dataTableProxy('reports_table')
     
     makeTable <- function() {
-      print("making table")
+      # print("making table")
       output$reports_table = DT::renderDT({
-        print("OG DF")
-        print(str(globals$stash$reports))
+        # print("OG DF")
+        # print(str(globals$stash$reports))
         DT::datatable(
           globals$stash$reports,
           selection = "single",
@@ -85,8 +85,8 @@ mod_reports_table_module_server <-
       }),
       
       updateTableData = function(newData) {
-        print("updateData called")
-        print(str(newData))
+        # print("updateData called")
+        # print(str(newData))
         # browser()
         #format the data returned from mapEdit to something the datatable is used to
         drops <- c("X_leaflet_id", "layerId", "edit_id", "feature_type")

@@ -30,7 +30,7 @@ mod_report_image_server <-
     
 
     observeEvent(reports_output(), {
-      print(reports_output()$mispark_id)
+      # print(reports_output()$mispark_id)
       # if a row is selected - add a UI element to show the image of the selected row
       id <- reports_output()$mispark_id
       if (length(id) != 0) {
