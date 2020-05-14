@@ -32,7 +32,10 @@ Imports:
     crosstalk,
     viridis,
     leafem,
-    purrr
+    purrr,
+    scales,
+    tidyr,
+    rlang
 Remotes: 
     rstudio/leaflet.mapboxgl,
     rstudio/DT,

@@ -41,6 +41,9 @@ usethis::use_package( "viridis" )
 usethis::use_package( "leafem" )
 usethis::use_package( "purrr" )
 usethis::use_package( "redux" )
+usethis::use_package( "scales" )
+usethis::use_package( "tidyr" )
+usethis::use_package( "rlang" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

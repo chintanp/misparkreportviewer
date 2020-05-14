@@ -7,6 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom rlang .data
 mod_reports_table_module_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -27,6 +28,8 @@ mod_reports_table_module_ui <- function(id) {
 #' reports_table_module Server Function
 #'
 #' @noRd
+#' 
+#' @importFrom rlang .data
 mod_reports_table_module_server <-
   function(input, output, session, globals) {
     ns <- session$ns
@@ -77,9 +80,9 @@ mod_reports_table_module_server <-
         # req(input$reports_table_rows_all)
         if (!is.null(input$reports_table_rows_all)) {
           ids <- input$reports_table_rows_all
-          globals$stash$reports[ids,] %>% tidyr::drop_na(mispark_id)
+          globals$stash$reports[ids,] %>% tidyr::drop_na(.data$mispark_id)
         } else if (!is.null(globals$stash$reports)) {
-          globals$stash$reports %>% tidyr::drop_na(mispark_id)
+          globals$stash$reports %>% tidyr::drop_na(.data$mispark_id)
         }
         
       }),
