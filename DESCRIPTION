@@ -34,9 +34,9 @@ Imports:
     leafem,
     purrr
 Remotes: 
-    rstudio/leaflet.mapboxgl
-    rstudio/DT
-    rstudio/crosstalk
+    rstudio/leaflet.mapboxgl,
+    rstudio/DT,
+    rstudio/crosstalk,
     rstudio/leaflet
 Encoding: UTF-8
 LazyData: true
