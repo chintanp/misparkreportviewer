@@ -10,7 +10,7 @@
 mod_reports_bar_ui <- function(id) {
   ns <- NS(id)
   tagList(
-      plotly::plotlyOutput(outputId = ns("severity_bar"))
+    shinycssloaders::withSpinner(plotly::plotlyOutput(outputId = ns("severity_bar")))
   )
 }
 

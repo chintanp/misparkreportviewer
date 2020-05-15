@@ -11,8 +11,8 @@
 mod_infractions_bar_ui <- function(id) {
   ns <- NS(id)
   tagList(
-      plotly::plotlyOutput(outputId = ns("infraction_bar"))
-  )
+    shinycssloaders::withSpinner(plotly::plotlyOutput(outputId = ns("infraction_bar"))
+  ))
 }
 
 #' infractions_bar Server Function

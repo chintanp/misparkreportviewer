@@ -15,4 +15,5 @@ app_server <- function( input, output, session ) {
   callModule(mod_report_infraction_table_server, "report_infraction_table_ui_1", GlobalData, reports_output)
   callModule(mod_reports_bar_server, "reports_bar_ui_1", GlobalData, reports_output)
   callModule(mod_infractions_bar_server, "infractions_bar_ui_1", GlobalData, reports_output)
+  callModule(mod_info_page_server, "info_page_ui_1")
 }

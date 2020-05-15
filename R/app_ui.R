@@ -47,6 +47,13 @@ app_ui <- function(request) {
                                     mod_report_infraction_table_ui("report_infraction_table_ui_1")
                                   )))
   
+  info_tab <- bs4Dash::bs4TabItem(tabName = "info_tab",
+                                  fluidRow(
+                                    column(
+                                      width = 12,
+                                      mod_info_page_ui("info_page_ui_1"),
+                                      class = "text-left"
+                                    )))
   
   tagList(
     # Leave this function for adding external resources
@@ -68,14 +75,17 @@ app_ui <- function(request) {
         title = "Misparked Repo",
         brandColor = "purple",
         url = "",
-        src = "",
+        src = 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Arabesque-letter-m-icon.png',
         elevation = 3,
         opacity = 0.3,
         bs4Dash::bs4SidebarMenu(
           bs4Dash::bs4SidebarHeader(""),
           bs4Dash::bs4SidebarMenuItem("Home",
                                       tabName = "home_tab",
-                                      icon = "home")
+                                      icon = "home"),
+          bs4Dash::bs4SidebarMenuItem("Info",
+                                      tabName = "info_tab",
+                                      icon = "info-circle")
         )
       ),
       controlbar = bs4Dash::bs4DashControlbar(disable = TRUE),
@@ -90,7 +100,8 @@ app_ui <- function(request) {
       ),
       title = "test",
       body = bs4Dash::bs4DashBody(shinyjs::useShinyjs(),
-                                  bs4Dash::bs4TabItems(home_tab))
+                                  bs4Dash::bs4TabItems(home_tab, 
+                                                       info_tab))
     )
   )
 }

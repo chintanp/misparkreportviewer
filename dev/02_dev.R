@@ -53,6 +53,7 @@ golem::add_module( name = "report_image" ) # Name of the module
 golem::add_module( name = "report_map" ) # Name of the module
 golem::add_module( name = "reports_bar" )
 golem::add_module( name = "infractions_bar" )
+golem::add_module( name = "info_page" )
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
 golem::add_fct( "helpers" ) 
