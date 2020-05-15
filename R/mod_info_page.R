@@ -24,17 +24,16 @@ mod_info_page_ui <- function(id) {
           tags$a(href = "https://misplacedwheels.com/", "Misplaced Wheels App.")
         ),
         tags$br(),
-        tags$br(),
         tags$p(
           " The Misparked Reports table allows filtering of reports to particular city or date-time window etc. The filter updates the reports on the map and associated charts. The complete set or the filtered set can be downloaded into various formats for further analysis. A row click displays the image submitted with the report as a popup on the map as well as a table  of the associated infractions. "
         ),
-        imageOutput(ns("tableUseImage")),
+        shinycssloaders::withSpinner(imageOutput(ns("tableUseImage"))),
         tags$br(),
         tags$br(),
         tags$p(
           " Another mode of down-selecting the reports is by drawing a rectangle or a polygon around the area of interest on the map. The Misparked Reports table updates to show the selected reports and the charts update to show the relevant summary statistics. The points on the map can be clicked to the display the submitted image. "
         ),
-        imageOutput(ns("mapUseImage"))
+        shinycssloaders::withSpinner(imageOutput(ns("mapUseImage")))
       )
       
     )
