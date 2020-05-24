@@ -27,8 +27,8 @@ GlobalModule <- function(input, output, session) {
       conn,
       "select
              mr.mispark_id,
-             mc.company_name,
-             mt.micromobility_typename,
+              string_agg(distinct mc.company_name, ', ') as company_name,
+             string_agg(distinct mt.micromobility_typename, ', ') as type,
              mr.report_datetime,
              MAX(it.infraction_severity) as severity,
              round(cast(ST_X(mr.report_location::geometry) as numeric), 4) as longitude,
@@ -37,7 +37,7 @@ GlobalModule <- function(input, output, session) {
              ci.city
          from misparking_report mr
          JOIN micromobility_services ms
-          ON mr.micromobilityservice_id = ms.micromobilityservice_id
+          ON ms.micromobilityservice_id =  ANY(mr.micromobilityservice_ids)
          JOIN micromobility_type mt
           ON mt.micromobilitytype_id = ms.micromobilitytype_id
          JOIN micromobility_company mc
@@ -48,7 +48,8 @@ GlobalModule <- function(input, output, session) {
           ON mx.infractiontype_id = it.infractiontype_id
          JOIN city_info ci
           ON mr.city_id = ci.city_id
-         GROUP BY mr.mispark_id, mc.company_name, mt.micromobility_typename, ci.city;
+         GROUP BY mr.mispark_id, ci.city
+		 ORDER BY mr.mispark_id;
          "
     )
     
