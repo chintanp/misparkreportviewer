@@ -8,7 +8,7 @@
 #'
 #'
 # Module globals
-tile_layers <- c("light", "streets", "satellite-streets")
+tile_layers <- c("streets", "light", "satellite-streets")
 
 colorPal <-
   leaflet::colorNumeric("inferno", domain = c(0, 10), reverse = TRUE)
@@ -90,6 +90,8 @@ mod_report_map_server <-
       # id <- reports_output[[1]]()$mispark_id
       # browser()
       if (length(id) > 0 && !is.na(id)) {
+        
+        # browser()
         imageData <- DBI::dbGetQuery(
           db_conn(),
           paste0(
@@ -157,7 +159,7 @@ mod_report_map_server <-
       clearMapOverlay(mapID = "map_reports-map",
                       removeGroup = "Heatmap")
       
-      
+      # browser()
       # output$map_reports <- leaflet::renderLeaflet({
       leaflet::leafletProxy("map_reports-map") %>% # the id is inspired from this comment https://github.com/r-spatial/mapedit/issues/95#issuecomment-481888386
         leaflet.extras::addHeatmap(
@@ -169,15 +171,16 @@ mod_report_map_server <-
           group = 'Heatmap'
         ) %>%
         leaflet::addCircleMarkers(
-          lng = reports_output[[2]]()$longitude,
-          lat = reports_output[[2]]()$latitude,
+          lng = ~longitude,
+          lat = ~latitude,
           group = 'Points',
           layerId = reports_output[[2]]()$mispark_id,
           options = leaflet::pathOptions(minZoom = 15),
           radius = 5,
           stroke = FALSE,
           fillOpacity = 0.8,
-          color = colorPal(reports_output[[2]]()$severity)
+          color = colorPal(reports_output[[2]]()$severity), 
+          data = reports_output[[2]]()
           
         ) %>%
         leaflet::addLayersControl(
@@ -211,13 +214,16 @@ mod_report_map_server <-
     })
     
     observeEvent(input[["map_reports-map_marker_click"]], {
-      # print("map marker click")
+      print("map marker click")
       click <- input[["map_reports-map_marker_click"]]
       id <- input[["map_reports-map_marker_click"]]$id
       lat <- input[["map_reports-map_marker_click"]]$lat
       lng <- input[["map_reports-map_marker_click"]]$lng
-      # print(input[["map_reports-map_marker_click"]]$id)
-      showReportImagePopup(id, lat, lng)
+      print(input[["map_reports-map_marker_click"]]$id)
+      # browser()
+      # showReportImagePopup(id, lat, lng)
+      # Select row needs the row number of the table to select it
+      reports_output$selectRow(which(reports_output[[2]]()$mispark_id == id))
     })
     
     observeEvent(crud()$finished, {

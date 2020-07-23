@@ -15,14 +15,12 @@ app_ui <- function(request) {
                                       9,
                                       
                                       bs4Dash::bs4TabCard(
-                                        title = tags$p(
-                                          "Map and Charts",
-                                          style = " font-size: 20px;
-                                                    font-weight: 600; 
-                                                    margin: 0; "
-                                        ),
-                                        elevation = 4,
                                         id = "map_charts_tabcard",
+                                        title = tags$p("Map and Charts",
+                                                       style = " font-size: 20px;
+                                                    font-weight: 600;
+                                                    margin: 0; "),
+                                        elevation = 4,
                                         width = 12,
                                         collapsible = TRUE,
                                         maximizable = TRUE,
@@ -48,12 +46,11 @@ app_ui <- function(request) {
                                   )))
   
   info_tab <- bs4Dash::bs4TabItem(tabName = "info_tab",
-                                  fluidRow(
-                                    column(
-                                      width = 12,
-                                      mod_info_page_ui("info_page_ui_1"),
-                                      class = "text-left"
-                                    )))
+                                  fluidRow(column(
+                                    width = 12,
+                                    mod_info_page_ui("info_page_ui_1"),
+                                    class = "text-left"
+                                  )))
   
   tagList(
     # Leave this function for adding external resources
@@ -99,9 +96,11 @@ app_ui <- function(request) {
         right_text = "2020"
       ),
       title = "test",
-      body = bs4Dash::bs4DashBody(shinyjs::useShinyjs(),
-                                  bs4Dash::bs4TabItems(home_tab, 
-                                                       info_tab))
+      body = bs4Dash::bs4DashBody(
+        shinyjs::useShinyjs(),
+        bs4Dash::bs4TabItems(home_tab,
+                             info_tab)
+      )
     )
   )
 }

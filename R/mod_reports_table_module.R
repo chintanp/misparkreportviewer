@@ -72,6 +72,7 @@ mod_reports_table_module_server <-
     # return the selected row, so other modules can use it to update relevant views
     return(list(
       reactive({
+        # browser()
         id <- input$reports_table_rows_selected
         globals$stash$reports[id,]
       }),
@@ -79,9 +80,11 @@ mod_reports_table_module_server <-
         # browser()
         # req(input$reports_table_rows_all)
         if (!is.null(input$reports_table_rows_all)) {
+          # browser()
           ids <- input$reports_table_rows_all
           globals$stash$reports[ids,] %>% tidyr::drop_na(.data$mispark_id)
         } else if (!is.null(globals$stash$reports)) {
+          # browser()
           globals$stash$reports %>% tidyr::drop_na(.data$mispark_id)
         }
         
@@ -108,6 +111,11 @@ mod_reports_table_module_server <-
       
       resetTable = function() {
         makeTable()
+      }, 
+      
+      selectRow = function(rowid) {
+        # browser()
+        DT::selectRows(proxy, selected = rowid) #c(as.integer(rowid)))
       }
     ))
     
