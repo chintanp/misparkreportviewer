@@ -137,7 +137,7 @@ mod_report_map_server <-
       ),
       reports_map
     )
-    
+    # browser()
     deleted <- isolate(crud()$deleted)
     drawn <- isolate(crud()$drawn)
     

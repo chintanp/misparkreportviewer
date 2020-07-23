@@ -30,9 +30,12 @@ mod_report_infraction_table_server <-
     
     observeEvent(reports_output[[1]](),
                  {
+                   # browser()
                    # print(reports_output[[1]]()$mispark_id)
                    # if a row is selected - add a UI element to show the image of the selected row
-                   id <- reports_output[[1]]()$mispark_id
+                   id <-
+                     (reports_output[[1]]() %>% tidyr::drop_na(.data$mispark_id))$mispark_id
+                   infractionsData <- data.frame()
                    if (length(id) != 0) {
                      infractionsData <- DBI::dbGetQuery(
                        db_conn(),
@@ -46,50 +49,56 @@ mod_report_infraction_table_server <-
                                   infractiontype_id
                               from misparking_report_infraction_xref mx
                               where mx.mispark_id = ",
-                              id,
-                             ")
+                         id,
+                         ")
                           ORDER BY infraction_severity DESC "
                        )
                      )
-                     
-                     output$infractions_output <- renderUI({
-                       tagList(
-                         bs4Dash::bs4Card(
-                           title = "Infractions for the selected report",
-                           closable = FALSE,
-                           status = "success",
-                           collapsible = TRUE,
-                           elevation = 4,
-                           width = NULL,
-                           solidHeader = TRUE,
-                           DT::DTOutput(ns("infractions_table"))
-                           
-                         )
-                       )
-                     })
-                     output$infractions_table = DT::renderDT({
-                       DT::datatable(
-                         infractionsData,
-                         selection = "none",
-                         filter = 'top',
-                         options = list(
-                           pageLength = 10,
-                           autoWidth = TRUE,
-                           scrollX = TRUE,
-                           scrollCollapse = TRUE,
-                           columnDefs = list(list(
-                             className = 'dt-center', targets = "_all"
-                           )),
-                           initComplete = DT::JS(
-                             "function(settings, json) {",
-                             "$(this.api().table().header()).css({'background-color': '#EBECEC', 'color': '#000'});",
-                             "}"
-                           )
-                         ),
-                         class = 'nowrap display'
-                       )
-                     })
+                   } else {
+                     infractionsData <- data.frame()
                    }
+                   
+                   
+                   output$infractions_output <- renderUI({
+                     req(infractionsData)
+                     tagList(
+                       bs4Dash::bs4Card(
+                         title = "Infractions for the selected report",
+                         closable = FALSE,
+                         status = "success",
+                         collapsible = TRUE,
+                         elevation = 4,
+                         width = NULL,
+                         solidHeader = TRUE,
+                         DT::DTOutput(ns("infractions_table"))
+                         
+                       )
+                     )
+                   })
+                   output$infractions_table = DT::renderDT({
+                     req(infractionsData)
+                     DT::datatable(
+                       infractionsData,
+                       selection = "none",
+                       filter = 'top',
+                       options = list(
+                         pageLength = 10,
+                         autoWidth = TRUE,
+                         scrollX = TRUE,
+                         scrollCollapse = TRUE,
+                         columnDefs = list(list(
+                           className = 'dt-center', targets = "_all"
+                         )),
+                         initComplete = DT::JS(
+                           "function(settings, json) {",
+                           "$(this.api().table().header()).css({'background-color': '#EBECEC', 'color': '#000'});",
+                           "}"
+                         )
+                       ),
+                       class = 'nowrap display'
+                     )
+                   })
+                   
                  })
   }
 
