@@ -11,7 +11,7 @@
 mod_infractions_bar_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shinycssloaders::withSpinner(plotly::plotlyOutput(outputId = ns("infraction_bar"))
+    shinycssloaders::withSpinner(plotly::plotlyOutput(outputId = ns("infraction_bar"), height = 600)
   ))
 }
 
@@ -56,8 +56,10 @@ mod_infractions_bar_server <- function(input,
           y = ~ count,
           type = "bar"
         ) %>%
-        plotly::layout(xaxis = list(title = "Infraction Types"),
-                       yaxis = list(title = "Count"))
+        plotly::layout(xaxis = list(title = "Infraction Types", 
+                                    tickangle = 45),
+                       yaxis = list(title = "Count"), 
+                       margin = list(b = 300))
       
       fig
     # }

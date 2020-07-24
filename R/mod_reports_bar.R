@@ -27,16 +27,38 @@ mod_reports_bar_server <- function(input,
   output$severity_bar <- plotly::renderPlotly({
     # browser()
     req(reports_output[[2]]())
-    fig <- plotly::plot_ly(reports_output[[2]](), x = ~ as.factor(severity)) %>%
-      plotly::add_histogram() %>% 
+    # fig <- plotly::plot_ly(reports_output[[2]](), x = ~ as.factor(severity)) %>%
+    #   plotly::add_histogram() %>% 
+    #   plotly::layout(
+    #     
+    #     xaxis = list(title = "Severity"),
+    #     yaxis = list(title = "Count")
+    #     
+    #   )
+    # 
+    # fig
+    
+    # Hard-coding the x-axis categories. 
+    h <- hist(reports_output[[2]]()$severity, breaks = -1:10, plot = FALSE) 
+    browser()
+    plotly::plot_ly(x = h$breaks[2:12], y = h$counts) %>% plotly::add_bars(name = "FD") %>% 
       plotly::layout(
-        
-        xaxis = list(title = "Severity"),
-        yaxis = list(title = "Count")
-        
-      )
-
-    fig
+      
+      xaxis = list(title = "Severity"),
+      yaxis = list(title = "Count")
+      
+    )
+    
+    # fig <- plotly::plot_ly(reports_output[[2]](), x = ~ as.factor(severity)) %>%
+    #   plotly::add_histogram() %>% 
+    #   plotly::layout(
+    #     
+    #     xaxis = list(title = "Severity"),
+    #     yaxis = list(title = "Count")
+    #     
+    #   )
+    # 
+    # fig
   })
   
 }
