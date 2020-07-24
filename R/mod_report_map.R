@@ -23,13 +23,13 @@ reports_map <- leaflet::leaflet() %>%
   ) %>%
   leaflet.mapboxgl::addMapboxGL(
     style = "mapbox://styles/mapbox/streets-v11",
-    group = tile_layers[2],
+    group = tile_layers[1],
     setView = FALSE,
     accessToken = "pk.eyJ1IjoiY2hpbnRhbnAiLCJhIjoiY2ppYXU1anVuMThqazNwcDB2cGtneDdkYyJ9.TL6RTyRRFCbvJWyFa4P0Ow"
   ) %>%
   leaflet.mapboxgl::addMapboxGL(
     style = "mapbox://styles/mapbox/light-v10",
-    group = tile_layers[1],
+    group = tile_layers[2],
     setView = FALSE,
     accessToken = "pk.eyJ1IjoiY2hpbnRhbnAiLCJhIjoiY2ppYXU1anVuMThqazNwcDB2cGtneDdkYyJ9.TL6RTyRRFCbvJWyFa4P0Ow"
   ) %>%
